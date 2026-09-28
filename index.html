@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f172a">
+  <title>AI Cashflow & Business Forecasting</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-icon">AI</div>
+      <div>
+        <strong>AI CASHFLOW</strong>
+        <small>Business Forecasting</small>
+      </div>
+    </div>
+
+    <nav>
+      <button class="nav-item active" data-page="dashboard">
+        <span>▦</span> Dashboard
+      </button>
+
+      <button class="nav-item" data-page="cashflow">
+        <span>↔</span> Cashflow
+      </button>
+
+      <button class="nav-item" data-page="transactions">
+        <span>▤</span> Data Bisnis
+      </button>
+
+      <button class="nav-item" data-page="forecast">
+        <span>⌁</span> Forecasting
+      </button>
+
+      <button class="nav-item" data-page="scenario">
+        <span>◈</span> Simulasi Skenario
+      </button>
+
+      <button class="nav-item" data-page="planning">
+        <span>☷</span> Business Planning
+      </button>
+
+      <button class="nav-item" data-page="insight">
+        <span>✦</span> AI Business Insight
+      </button>
+
+      <button class="nav-item" data-page="reports">
+        <span>▥</span> Laporan
+      </button>
+
+      <button class="nav-item" data-page="settings">
+        <span>⚙</span> Pengaturan
+      </button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="storage-status">
+        <span class="status-dot"></span>
+        Data tersimpan lokal
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HEADER -->
+    <header class="header">
+      <button class="menu-btn" id="menuBtn">☰</button>
+
+      <div class="header-title">
+        <h1 id="pageTitle">Dashboard</h1>
+        <span id="currentDate"></span>
+      </div>
+
+      <div class="header-actions">
+        <button class="icon-btn" id="refreshBtn" title="Refresh">↻</button>
+      </div>
+    </header>
+
+    <!-- ================= DASHBOARD ================= -->
+    <section class="page active" id="dashboardPage">
+
+      <div class="hero">
+        <div>
+          <span class="eyebrow">AI BUSINESS FORECASTING</span>
+          <h2>Pahami kondisi bisnis hari ini,<br>simulasikan masa depan.</h2>
+          <p>
+            Sistem menganalisis data historis untuk membantu melihat
+            pola cashflow dan dampak keputusan bisnis.
+          </p>
+        </div>
+        <div class="hero-symbol">⌁</div>
+      </div>
+
+      <div class="stat-grid">
+
+        <div class="stat-card">
+          <div class="stat-label">Saldo Kas</div>
+          <div class="stat-value" id="dashCash">Rp0</div>
+          <div class="stat-sub">Kondisi kas saat ini</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Cash In</div>
+          <div class="stat-value positive" id="dashIn">Rp0</div>
+          <div class="stat-sub">Total pemasukan</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Cash Out</div>
+          <div class="stat-value negative" id="dashOut">Rp0</div>
+          <div class="stat-sub">Total pengeluaran</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Net Cashflow</div>
+          <div class="stat-value" id="dashNet">Rp0</div>
+          <div class="stat-sub">Arus kas bersih</div>
+        </div>
+
+      </div>
+
+      <div class="dashboard-grid">
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Cashflow Overview</h3>
+              <p>Pergerakan arus kas berdasarkan data bisnis.</p>
+            </div>
+          </div>
+
+          <div class="chart-box">
+            <canvas id="cashflowChart"></canvas>
+            <div class="empty-chart" id="chartEmpty">
+              Belum ada data transaksi
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>AI Business Insight</h3>
+              <p>Analisis otomatis kondisi bisnis.</p>
+            </div>
+          </div>
+
+          <div id="dashboardInsights" class="insight-list"></div>
+        </div>
+
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h3>Business Health</h3>
+            <p>Ringkasan kondisi bisnis berdasarkan data yang tersedia.</p>
+          </div>
+          <span class="health-badge" id="healthBadge">Belum ada data</span>
+        </div>
+
+        <div class="health-grid">
+          <div class="health-item">
+            <span>Cashflow</span>
+            <strong id="healthCashflow">-</strong>
+          </div>
+
+          <div class="health-item">
+            <span>Tren Pendapatan</span>
+            <strong id="healthRevenue">-</strong>
+          </div>
+
+          <div class="health-item">
+            <span>Burn Rate</span>
+            <strong id="healthBurn">Rp0</strong>
+          </div>
+
+          <div class="health-item">
+            <span>Cash Runway</span>
+            <strong id="healthRunway">-</strong>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= CASHFLOW ================= -->
+    <section class="page" id="cashflowPage">
+
+      <div class="section-head">
+        <div>
+          <h2>Cashflow</h2>
+          <p>Pantau uang masuk, uang keluar, dan saldo kas.</p>
+        </div>
+
+        <button class="primary-btn" id="openCashForm">
+          + Tambah Cashflow
+        </button>
+      </div>
+
+      <div class="stat-grid compact">
+        <div class="stat-card">
+          <div class="stat-label">Saldo Awal</div>
+          <div class="stat-value" id="cashOpening">Rp0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Total Masuk</div>
+          <div class="stat-value positive" id="cashTotalIn">Rp0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Total Keluar</div>
+          <div class="stat-value negative" id="cashTotalOut">Rp0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Saldo Akhir</div>
+          <div class="stat-value" id="cashEnding">Rp0</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Jenis</th>
+                <th>Kategori</th>
+                <th>Keterangan</th>
+                <th>Nominal</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="cashflowTable"></tbody>
+          </table>
+
+          <div class="table-empty" id="cashflowEmpty">
+            Belum ada transaksi cashflow.
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= DATA BISNIS ================= -->
+    <section class="page" id="transactionsPage">
+
+      <div class="section-head">
+        <div>
+          <h2>Data Bisnis</h2>
+          <p>Masukkan data historis yang menjadi dasar forecasting.</p>
+        </div>
+
+        <button class="primary-btn" id="openTransactionForm">
+          + Tambah Data
+        </button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="sales">Penjualan</button>
+        <button class="tab" data-tab="expense">Pengeluaran</button>
+        <button class="tab" data-tab="purchase">Pembelian</button>
+      </div>
+
+      <div class="panel tab-content active" id="salesTab">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Produk</th>
+                <th>Jumlah</th>
+                <th>Harga</th>
+                <th>Total</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="salesTable"></tbody>
+          </table>
+          <div class="table-empty" id="salesEmpty">
+            Belum ada data penjualan.
+          </div>
+        </div>
+      </div>
+
+      <div class="panel tab-content" id="expenseTab">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Kategori</th>
+                <th>Keterangan</th>
+                <th>Nominal</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="expenseTable"></tbody>
+          </table>
+          <div class="table-empty" id="expenseEmpty">
+            Belum ada data pengeluaran.
+          </div>
+        </div>
+      </div>
+
+      <div class="panel tab-content" id="purchaseTab">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Produk</th>
+                <th>Jumlah</th>
+                <th>Harga Modal</th>
+                <th>Total</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="purchaseTable"></tbody>
+          </table>
+          <div class="table-empty" id="purchaseEmpty">
+            Belum ada data pembelian.
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= FORECAST ================= -->
+    <section class="page" id="forecastPage">
+
+      <div class="section-head">
+        <div>
+          <h2>Business Forecasting</h2>
+          <p>Proyeksi berdasarkan pola historis yang tersedia.</p>
+        </div>
+
+        <button class="primary-btn" id="runForecast">
+          ⟳ Jalankan Forecast
+        </button>
+      </div>
+
+      <div class="forecast-controls panel">
+        <div class="form-group">
+          <label>Periode Forecast</label>
+          <select id="forecastMonths">
+            <option value="3">3 Bulan</option>
+            <option value="6" selected>6 Bulan</option>
+            <option value="12">12 Bulan</option>
+          </select>
+        </div>
+
+        <div class="forecast-method">
+          <span>Metode</span>
+          <strong>Historical Trend Analysis</strong>
+          <small>Menggunakan pola rata-rata data historis.</small>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-label">Forecast Revenue</div>
+          <div class="stat-value" id="forecastRevenue">Rp0</div>
+          <div class="stat-sub" id="forecastRevenueTrend">-</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Forecast Expense</div>
+          <div class="stat-value" id="forecastExpense">Rp0</div>
+          <div class="stat-sub">Proyeksi pengeluaran</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Forecast Net Cashflow</div>
+          <div class="stat-value" id="forecastNet">Rp0</div>
+          <div class="stat-sub">Proyeksi arus kas bersih</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Forecast Ending Cash</div>
+          <div class="stat-value" id="forecastCash">Rp0</div>
+          <div class="stat-sub">Estimasi saldo akhir</div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Forecast Cashflow</h3>
+              <p>Proyeksi arus kas periode mendatang.</p>
+            </div>
+          </div>
+
+          <div class="chart-box tall">
+            <canvas id="forecastChart"></canvas>
+            <div class="empty-chart" id="forecastEmpty">
+              Jalankan forecast untuk melihat proyeksi.
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Forecast Analysis</h3>
+            </div>
+          </div>
+
+          <div id="forecastAnalysis" class="analysis-box">
+            Belum ada forecast.
+          </div>
+        </div>
+
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h3>Forecast Detail</h3>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Periode</th>
+                <th>Revenue</th>
+                <th>Expense</th>
+                <th>Net Cashflow</th>
+                <th>Ending Cash</th>
+              </tr>
+            </thead>
+            <tbody id="forecastTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= SCENARIO ================= -->
+    <section class="page" id="scenarioPage">
+
+      <div class="section-head">
+        <div>
+          <h2>Simulasi Skenario</h2>
+          <p>Uji dampak keputusan bisnis sebelum mengambil tindakan.</p>
+        </div>
+      </div>
+
+      <div class="scenario-layout">
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Scenario Builder</h3>
+              <p>Masukkan perubahan yang ingin disimulasikan.</p>
+            </div>
+          </div>
+
+          <div class="scenario-form">
+
+            <div class="form-group">
+              <label>Periode Simulasi</label>
+              <select id="scenarioMonths">
+                <option value="1">1 Bulan</option>
+                <option value="3" selected>3 Bulan</option>
+                <option value="6">6 Bulan</option>
+                <option value="12">12 Bulan</option>
+              </select>
+            </div>
+
+            <div class="range-group">
+              <div class="range-head">
+                <label>Perubahan Penjualan</label>
+                <strong id="salesScenarioValue">0%</strong>
+              </div>
+              <input type="range" id="salesScenario" min="-50" max="100" value="0">
+            </div>
+
+            <div class="range-group">
+              <div class="range-head">
+                <label>Perubahan Pembelian/Stok</label>
+                <strong id="purchaseScenarioValue">0%</strong>
+              </div>
+              <input type="range" id="purchaseScenario" min="-50" max="100" value="0">
+            </div>
+
+            <div class="range-group">
+              <div class="range-head">
+                <label>Perubahan Pengeluaran</label>
+                <strong id="expenseScenarioValue">0%</strong>
+              </div>
+              <input type="range" id="expenseScenario" min="-50" max="100" value="0">
+            </div>
+
+            <div class="range-group">
+              <div class="range-head">
+                <label>Perubahan Marketing</label>
+                <strong id="marketingScenarioValue">0%</strong>
+              </div>
+              <input type="range" id="marketingScenario" min="0" max="200" value="0">
+            </div>
+
+            <button class="primary-btn full" id="runScenario">
+              ▶ Jalankan Simulasi
+            </button>
+
+          </div>
+        </div>
+
+        <div class="panel scenario-result">
+          <div class="panel-header">
+            <div>
+              <h3>Hasil Simulasi</h3>
+              <p>Dibandingkan dengan kondisi dasar.</p>
+            </div>
+          </div>
+
+          <div class="scenario-cards">
+
+            <div class="scenario-card">
+              <span>Base Cash</span>
+              <strong id="scenarioBaseCash">Rp0</strong>
+            </div>
+
+            <div class="scenario-card">
+              <span>Scenario Cash</span>
+              <strong id="scenarioCash">Rp0</strong>
+            </div>
+
+            <div class="scenario-card">
+              <span>Cash Impact</span>
+              <strong id="scenarioImpact">Rp0</strong>
+            </div>
+
+            <div class="scenario-card">
+              <span>Net Cashflow</span>
+              <strong id="scenarioNet">Rp0</strong>
+            </div>
+
+          </div>
+
+          <div class="scenario-message" id="scenarioMessage">
+            Atur parameter lalu jalankan simulasi.
+          </div>
+        </div>
+
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h3>Scenario Projection</h3>
+          </div>
+        </div>
+
+        <div class="chart-box tall">
+          <canvas id="scenarioChart"></canvas>
+          <div class="empty-chart" id="scenarioEmpty">
+            Belum ada simulasi.
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= PLANNING ================= -->
+    <section class="page" id="planningPage">
+
+      <div class="section-head">
+        <div>
+          <h2>Business Planning</h2>
+          <p>Gunakan forecast dan simulasi sebagai dasar perencanaan.</p>
+        </div>
+
+        <button class="primary-btn" id="generatePlan">
+          ✦ Generate Business Plan
+        </button>
+      </div>
+
+      <div class="planning-grid">
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Target Bisnis</h3>
+              <p>Tentukan target yang ingin dicapai.</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Target Pendapatan Bulanan</label>
+            <input type="number" id="targetRevenue" placeholder="50000000">
+          </div>
+
+          <div class="form-group">
+            <label>Target Saldo Kas</label>
+            <input type="number" id="targetCash" placeholder="100000000">
+          </div>
+
+          <div class="form-group">
+            <label>Batas Pengeluaran Bulanan</label>
+            <input type="number" id="targetExpense" placeholder="20000000">
+          </div>
+
+          <button class="secondary-btn full" id="saveTargets">
+            Simpan Target
+          </button>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Planning Analysis</h3>
+            </div>
+          </div>
+
+          <div id="planningAnalysis" class="planning-analysis">
+            Belum ada business plan.
+          </div>
+        </div>
+
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h3>Action Plan</h3>
+            <p>Langkah yang dapat dipertimbangkan berdasarkan kondisi data.</p>
+          </div>
+        </div>
+
+        <div id="actionPlan" class="action-list"></div>
+      </div>
+
+    </section>
+
+    <!-- ================= AI INSIGHT ================= -->
+    <section class="page" id="insightPage">
+
+      <div class="section-head">
+        <div>
+          <h2>AI Business Insight</h2>
+          <p>Analisis otomatis dari data bisnis yang tersedia.</p>
+        </div>
+
+        <button class="primary-btn" id="refreshInsight">
+          ✦ Analisis Ulang
+        </button>
+      </div>
+
+      <div class="ai-banner">
+        <div class="ai-big-icon">✦</div>
+        <div>
+          <span>AI BUSINESS ANALYSIS</span>
+          <h2>Data → Pattern → Insight → Action</h2>
+          <p>
+            Sistem membaca pola historis dan memberikan analisis berbasis
+            perhitungan data yang tersimpan.
+          </p>
+        </div>
+      </div>
+
+      <div id="insightCards" class="insight-cards"></div>
+
+    </section>
+
+    <!-- ================= REPORT ================= -->
+    <section class="page" id="reportsPage">
+
+      <div class="section-head">
+        <div>
+          <h2>Laporan</h2>
+          <p>Ringkasan performa dan cashflow bisnis.</p>
+        </div>
+
+        <button class="secondary-btn" id="printReport">
+          🖨 Cetak Laporan
+        </button>
+      </div>
+
+      <div id="reportArea">
+
+        <div class="report-header">
+          <div>
+            <span class="eyebrow">BUSINESS REPORT</span>
+            <h2 id="reportCompany">AI CASHFLOW BUSINESS</h2>
+            <p id="reportDate"></p>
+          </div>
+        </div>
+
+        <div class="stat-grid compact">
+          <div class="stat-card">
+            <div class="stat-label">Revenue</div>
+            <div class="stat-value" id="reportRevenue">Rp0</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Pengeluaran</div>
+            <div class="stat-value" id="reportExpense">Rp0</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Net Cashflow</div>
+            <div class="stat-value" id="reportNet">Rp0</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Saldo Kas</div>
+            <div class="stat-value" id="reportCash">Rp0</div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Business Summary</h3>
+            </div>
+            <div id="reportSummary" class="analysis-box"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Forecast Summary</h3>
+            </div>
+            <div id="reportForecast" class="analysis-box"></div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ================= SETTINGS ================= -->
+    <section class="page" id="settingsPage">
+
+      <div class="section-head">
+        <div>
+          <h2>Pengaturan</h2>
+          <p>Pengaturan aplikasi dan data.</p>
+        </div>
+      </div>
+
+      <div class="settings-grid">
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Profil Bisnis</h3>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Nama Bisnis</label>
+            <input type="text" id="businessName" placeholder="Nama bisnis">
+          </div>
+
+          <div class="form-group">
+            <label>Saldo Awal</label>
+            <input type="number" id="openingBalance" placeholder="0">
+          </div>
+
+          <button class="primary-btn full" id="saveSettings">
+            Simpan Pengaturan
+          </button>
+        </div>
+
+        <div class="panel danger-panel">
+          <div class="panel-header">
+            <div>
+              <h3>Data Aplikasi</h3>
+              <p>Gunakan dengan hati-hati.</p>
+            </div>
+          </div>
+
+          <button class="danger-btn full" id="resetData">
+            Hapus Semua Data
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<!-- ================= MODAL CASHFLOW ================= -->
+<div class="modal" id="cashModal">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h3>Tambah Cashflow</h3>
+      <button class="close-modal" data-close="cashModal">×</button>
+    </div>
+
+    <form id="cashForm">
+
+      <div class="form-group">
+        <label>Tanggal</label>
+        <input type="date" id="cashDate" required>
+      </div>
+
+      <div class="form-group">
+        <label>Jenis</label>
+        <select id="cashType" required>
+          <option value="in">Cash In / Masuk</option>
+          <option value="out">Cash Out / Keluar</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Kategori</label>
+        <select id="cashCategory">
+          <option>Penjualan</option>
+          <option>Modal</option>
+          <option>Piutang</option>
+          <option>Pembelian</option>
+          <option>Gaji</option>
+          <option>Listrik</option>
+          <option>Sewa</option>
+          <option>Marketing</option>
+          <option>Transportasi</option>
+          <option>Operasional</option>
+          <option>Lainnya</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Keterangan</label>
+        <input type="text" id="cashDescription" placeholder="Keterangan">
+      </div>
+
+      <div class="form-group">
+        <label>Nominal</label>
+        <input type="number" id="cashAmount" min="0" required>
+      </div>
+
+      <button class="primary-btn full" type="submit">
+        Simpan Cashflow
+      </button>
+
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL TRANSACTION ================= -->
+<div class="modal" id="transactionModal">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h3>Tambah Data Bisnis</h3>
+      <button class="close-modal" data-close="transactionModal">×</button>
+    </div>
+
+    <form id="transactionForm">
+
+      <div class="form-group">
+        <label>Jenis Data</label>
+        <select id="transactionType">
+          <option value="sale">Penjualan</option>
+          <option value="expense">Pengeluaran</option>
+          <option value="purchase">Pembelian</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Tanggal</label>
+        <input type="date" id="transactionDate" required>
+      </div>
+
+      <div id="saleFields">
+
+        <div class="form-group">
+          <label>Produk</label>
+          <input type="text" id="saleProduct" placeholder="Nama produk">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Jumlah</label>
+            <input type="number" id="saleQty" min="1" value="1">
+          </div>
+
+          <div class="form-group">
+            <label>Harga</label>
+            <input type="number" id="salePrice" min="0" value="0">
+          </div>
+        </div>
+
+      </div>
+
+      <div id="purchaseFields" class="hidden">
+
+        <div class="form-group">
+          <label>Produk</label>
+          <input type="text" id="purchaseProduct" placeholder="Nama produk">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Jumlah</label>
+            <input type="number" id="purchaseQty" min="1" value="1">
+          </div>
+
+          <div class="form-group">
+            <label>Harga Modal</label>
+            <input type="number" id="purchasePrice" min="0" value="0">
+          </div>
+        </div>
+
+      </div>
+
+      <div id="expenseFields" class="hidden">
+
+        <div class="form-group">
+          <label>Kategori</label>
+          <select id="expenseCategory">
+            <option>Gaji</option>
+            <option>Listrik</option>
+            <option>Sewa</option>
+            <option>Transportasi</option>
+            <option>Marketing</option>
+            <option>Operasional</option>
+            <option>Lainnya</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Keterangan</label>
+          <input type="text" id="expenseDescription">
+        </div>
+
+        <div class="form-group">
+          <label>Nominal</label>
+          <input type="number" id="expenseAmount" min="0" value="0">
+        </div>
+
+      </div>
+
+      <button class="primary-btn full" type="submit">
+        Simpan Data
+      </button>
+
+    </form>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
